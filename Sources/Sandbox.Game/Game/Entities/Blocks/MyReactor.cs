@@ -296,6 +296,11 @@ namespace Sandbox.Game.Entities
             set { base.Enabled = value; }
         }
 
+        bool Sandbox.ModAPI.Ingame.IMyPowerProducer.ProductionEnabled
+        {
+            get { return IsWorking && MaxPowerOutput > 0; }
+        }
+
         public bool HasCapacityRemaining
         {
             get { return m_hasRemainingCapacity; }
@@ -419,7 +424,7 @@ namespace Sandbox.Game.Entities
             m_damageEffect = null;
         }*/
 
-        void inventory_ContentsChanged(MyInventory obj)
+        void inventory_ContentsChanged(MyInventoryBase obj)
         {
             var before = IsWorking;
             RefreshRemainingCapacity();

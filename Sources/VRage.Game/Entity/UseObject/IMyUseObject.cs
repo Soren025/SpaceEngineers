@@ -22,7 +22,8 @@ namespace VRage.Game.Entity.UseObject
         UsedBySomeoneElse,
         AccessDenied,
         Closed,
-        Unpowered
+        Unpowered,
+        CockpitDamaged
     }
 
     public struct MyActionDescription
@@ -86,6 +87,8 @@ namespace VRage.Game.Entity.UseObject
         bool HandleInput();
 
         void OnSelectionLost();
+
+        bool PlayIndicatorSound { get; }
     }
 
     public static class UseObjectExtensions

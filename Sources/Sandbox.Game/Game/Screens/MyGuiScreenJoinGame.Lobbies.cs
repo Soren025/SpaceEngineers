@@ -123,16 +123,8 @@ namespace Sandbox.Game.Gui
                 return;
 
             Lobby selectedLobby = (Lobby)selectedRow.UserData;
-            bool isBattle = MyMultiplayerLobby.GetLobbyBattle(selectedLobby);
 
-            if (MyFakes.ENABLE_BATTLE_SYSTEM && isBattle)
-            {
-                MyJoinGameHelper.JoinBattleGame(selectedLobby);
-            }
-            else
-            {
-                MyJoinGameHelper.JoinGame(selectedLobby);
-            }
+            MyJoinGameHelper.JoinGame(selectedLobby);
         }
 
         private void OnRefreshLobbiesClick(MyGuiControlButton obj)
@@ -175,7 +167,7 @@ namespace Sandbox.Game.Gui
                 LobbySearch.AddFriendLobbies(m_lobbies);
                 LobbySearch.AddPublicLobbies(m_lobbies);
             }
-        
+
             RefreshGameList();
             screen.CloseScreen();
         }
@@ -255,9 +247,9 @@ namespace Sandbox.Game.Gui
                     var row = new MyGuiControlTable.Row(lobby);
 
                     string sessionName = MyMultiplayerLobby.GetLobbyWorldName(lobby);
-                    ulong sessionSize  = MyMultiplayerLobby.GetLobbyWorldSize(lobby);
-                    int appVersion     = MyMultiplayerLobby.GetLobbyAppVersion(lobby);
-                    int modCount       = MyMultiplayerLobby.GetLobbyModCount(lobby);
+                    ulong sessionSize = MyMultiplayerLobby.GetLobbyWorldSize(lobby);
+                    int appVersion = MyMultiplayerLobby.GetLobbyAppVersion(lobby);
+                    int modCount = MyMultiplayerLobby.GetLobbyModCount(lobby);
 
                     var searchName = m_blockSearch.Text.Trim();
                     if (!string.IsNullOrWhiteSpace(searchName) && !sessionName.ToLower().Contains(searchName.ToLower()))
@@ -274,7 +266,19 @@ namespace Sandbox.Game.Gui
 
                         MyGameModeEnum gameMode = MyMultiplayerLobby.GetLobbyGameMode(lobby);
                         if (MyMultiplayerLobby.GetLobbyScenario(lobby))
+                        {
                             m_gameTypeText.AppendStringBuilder(MyTexts.Get(MySpaceTexts.WorldSettings_GameScenario));
+                            DateTime started = MyMultiplayerLobby.GetLobbyDateTime(MyMultiplayer.ScenarioStartTimeTag, lobby, DateTime.MinValue);
+                            if (started > DateTime.MinValue)
+                            {
+                                TimeSpan timeRunning = DateTime.UtcNow - started;
+                                var hrs = Math.Truncate(timeRunning.TotalHours);
+                                int mins = (int)((timeRunning.TotalHours - hrs) * 60);
+                                m_gameTypeText.Append(" ").Append(hrs).Append(":").Append(mins.ToString("D2"));
+                            }
+                            else
+                                m_gameTypeText.Append(" Lobby");
+                        }
                         else
                             switch (gameMode)
                             {
@@ -285,7 +289,7 @@ namespace Sandbox.Game.Gui
                                     m_gameTypeText.AppendStringBuilder(MyTexts.Get(MySpaceTexts.WorldSettings_GameModeSurvival));
                                     m_gameTypeText.Append(String.Format(" {0}-{1}-{2}", inventory, assembler, refinery));
                                     break;
-                                default:    
+                                default:
                                     Debug.Fail("Unknown game type");
                                     break;
                             }
@@ -354,7 +358,7 @@ namespace Sandbox.Game.Gui
                     var modListToolTip = new StringBuilder();
 
                     int displayedModsMax = 15;
-                    int lastMod = Math.Min(displayedModsMax , modCount - 1);
+                    int lastMod = Math.Min(displayedModsMax, modCount - 1);
                     foreach (var mod in MyMultiplayerLobby.GetLobbyMods(lobby))
                     {
                         if (displayedModsMax-- <= 0)
@@ -388,7 +392,7 @@ namespace Sandbox.Game.Gui
             m_gamesTable.SelectedRowIndex = null;
         }
 
-#endregion
+        #endregion
 
     }
 }

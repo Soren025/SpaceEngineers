@@ -163,10 +163,10 @@ namespace Sandbox.Game.Entities.Debris
                 m_isStarted = true;
             }
 
-            public override void OnAddedToContainer(MyComponentContainer container)
+            public override void OnAddedToContainer()
             {
-                base.OnAddedToContainer(container);
-                m_debris = container.Entity as MyDebrisBase;
+                base.OnAddedToContainer();
+                m_debris = Container.Entity as MyDebrisBase;
             }
 
             public override void UpdateAfterSimulation()
